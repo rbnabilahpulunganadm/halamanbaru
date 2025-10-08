@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tab Baru</title>
+    
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts for Digital Dot Feel -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Silkscreen&display=swap" rel="stylesheet">
+
+    <style>
+        /* Custom styles and animations */
+        :root {
+            --bg-light: #f3f4f6; /* gray-100 */
+            --bg-dark: #111827; /* gray-900 */
+            --dot-light: #d1d5db; /* gray-300 */
+            --dot-dark: #374151; /* gray-700 */
+            color-scheme: light dark;
+        }
+
+        html {
+            transition: background-color 0.5s ease;
+        }
+
+        body {
+            font-family: 'Silkscreen', sans-serif;
+            background-color: var(--bg-light);
+            background-image: radial-gradient(var(--dot-light) 1px, transparent 1px);
+            background-size: 15px 15px;
+            overflow: hidden;
+        }
+
+        .dark body {
+            background-color: var(--bg-dark);
+            background-image: radial-gradient(var(--dot-dark) 1px, transparent 1px);
+        }
+
+        #matrix-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.25;
+        }
+        .dark #matrix-canvas {
+            opacity: 0.4;
+        }
+        
+        /* --- Sakura Petal Animation --- */
+        .sakura-petal {
+            position: absolute;
+            top: -50px;
+            width: 20px;
+            height: 20px;
+            background: #ffb7c5; /* Sakura pink */
+            border-radius: 15px 0px;
+            opacity: 0.8;
+            pointer-events: none;
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(0) rotate(0deg); }
+            100% { transform: translateY(110vh) rotate(720deg); }
+        }
+
+        /* --- Main Content Box Glow --- */
+        main {
+            animation: pulse-glow 6s ease-in-out infinite;
+        }
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1), 0 0 15px rgba(236, 72, 153, 0.2); }
+            50% { box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1), 0 0 30px rgba(236, 72, 153, 0.4); }
+        }
+        .dark main {
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1), 0 0 15px rgba(219, 39, 119, 0.3);
+        }
+
+        /* --- Shortcut Link Style --- */
+        .shortcut-link {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            background-color: rgba(243, 244, 246, 0.3);
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+            color: #4b5563;
+        }
+        .dark .shortcut-link {
+            background-color: rgba(31, 41, 55, 0.3);
+            color: #9ca3af;
+        }
+        .shortcut-link:hover {
+            color: #db2777;
+            transform: translateY(-4px);
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.1), 0 0 15px 2px rgba(236, 72, 153, 0.4);
+        }
+        .dark .shortcut-link:hover {
+            color: #f9a8d4;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.1), 0 0 15px 2px rgba(219, 39, 119, 0.5);
+        }
+
+        /* --- Theme Transition Animation --- */
+        @keyframes reveal-in {
+            from { clip-path: circle(0% at top right); }
+            to { clip-path: circle(150% at top right); }
+        }
+        ::view-transition-new(root) {
+            animation: reveal-in 0.5s ease-in-out;
+        }
+
+        /* --- Pac-Man Loader --- */
+        #loader {
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            background-color: var(--bg-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.5s ease-out, visibility 0.5s ease-out;
+        }
+        .dark #loader {
+            background-color: var(--bg-dark);
+        }
+        #loader.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .pacman-container { display: flex; align-items: center; }
+        .pacman { width: 50px; height: 50px; position: relative; }
+        .pacman-top, .pacman-bottom { width: 50px; height: 25px; background-color: #facc15; position: absolute; animation: pacman-mouth 0.4s infinite; }
+        .pacman-top { border-radius: 25px 25px 0 0; top: 0; }
+        .pacman-bottom { border-radius: 0 0 25px 25px; bottom: 0; }
+        @keyframes pacman-mouth {
+            0%, 100% { transform: rotate(0deg); }
+            50% { transform: rotate(20deg); }
+        }
+        .pacman-bottom { animation-direction: reverse; }
+        .pacman-dots { display: flex; margin-left: 10px; }
+        .dot { width: 8px; height: 8px; background-color: #facc15; border-radius: 50%; margin: 0 5px; animation: eat-dot 0.8s linear infinite; }
+        .dot:nth-child(2) { animation-delay: 0.2s; }
+        .dot:nth-child(3) { animation-delay: 0.4s; }
+        .dot:nth-child(4) { animation-delay: 0.6s; }
+        @keyframes eat-dot {
+            0% { transform: translateX(0); opacity: 1; }
+            100% { transform: translateX(-40px); opacity: 0; }
+        }
+
+        /* --- Mini Animation Widget Styles --- */
+        .animation-widget {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            border-radius: 10px;
+            padding: 1rem;
+            display: none; /* Hidden by default */
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .widget-visible {
+            display: block;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="text-gray-800 dark:text-gray-200">
+    <!-- Pac-Man Loader -->
+    <div id="loader">
+        <div class="pacman-container">
+            <div class="pacman">
+                <div class="pacman-top"></div>
+                <div class="pacman-bottom"></div>
+            </div>
+            <div class="pacman-dots">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Backgrounds -->
+    <canvas id="matrix-canvas"></canvas>
+    <div id="sakura-container" class="absolute inset-0 pointer-events-none" style="z-index: 1;"></div>
+    
+    <!-- Animated Widgets Container -->
+    <div id="animation-widgets-container" class="absolute inset-0 pointer-events-none" style="z-index: 2;">
+        <div id="math-widget" class="animation-widget top-10 left-10 text-cyan-500 dark:text-cyan-400 font-mono">
+            <span id="math-equation"></span>
+        </div>
+    </div>
+
+
+    <!-- Main Content -->
+    <div class="relative min-h-screen flex items-center justify-center p-4 z-10">
+        <main class="w-full max-w-xl text-center bg-white/20 dark:bg-gray-900/30 backdrop-blur-sm p-6 sm:p-8 rounded-2xl">
+            
+            <!-- Jam dan Tanggal (Satu Baris) -->
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-x-4 mb-4 text-gray-800 dark:text-gray-200">
+                <div id="date-display" class="text-md"></div>
+                <div id="clock" class="text-xl font-bold"></div>
+            </div>
+
+            <!-- Greeting -->
+            <h1 id="greeting" class="text-3xl sm:text-4xl font-bold mb-2 text-gray-900 dark:text-white"></h1>
+            <p class="text-gray-600 dark:text-gray-400 mb-8">Apa yang ingin kamu cari hari ini?</p>
+
+            <!-- Search Bar -->
+            <form id="search-form" action="https://www.google.com/search" method="GET" class="mb-8">
+                <div class="relative">
+                    <input type="text" name="q" placeholder="Ketik di sini..." class="w-full py-3 px-5 pr-12 text-lg bg-gray-100 dark:bg-gray-800 border-2 border-transparent focus:border-pink-400 dark:focus:border-pink-500 rounded-full outline-none transition-all duration-300" autofocus>
+                    <button type="submit" class="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-gray-500 hover:text-pink-500 transition-colors">
+                        <svg class="w-6 h-6" viewBox="0 0 12 12" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M5 0C2.23 0 0 2.23 0 5s2.23 5 5 5c1.2 0 2.28-.42 3.12-1.12L11 11.59 11.59 11 8.12 7.88C8.58 7.04 9 6.07 9 5c0-2.77-2.23-5-4-5zm0 1c2.22 0 4 1.78 4 4s-1.78 4-4 4-4-1.78-4-4 1.78-4 4-4z" transform="scale(0.9)"/></svg>
+                    </button>
+                </div>
+            </form>
+
+            <!-- Shortcut Links -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                 <a href="https://drive.google.com/drive/my-drive?hl=id" class="shortcut-link group">
+                    <svg class="w-8 h-8 mb-2" viewBox="0 0 16 12" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M15.6,2.4c-0.2-0.8-0.8-1.4-1.6-1.6C12.8,0.4,8,0.4,8,0.4s-4.8,0-6,0.4C1.2,1,0.6,1.6,0.4,2.4C0,3.6,0,6,0,6 s0,2.4,0.4,3.6c0.2,0.8,0.8,1.4,1.6,1.6C3.2,11.6,8,11.6,8,11.6s4.8,0,6-0.4c0.8-0.2,1.4-0.8,1.6-1.6C16,8.4,16,6,16,6S16,3.6,15.6,2.4z M6.4,8.4V3.6l4,2.4L6.4,8.4z"/></svg>
+                    <span>Drive Saya</span>
+                </a>
+                <a href="https://github.com/" class="shortcut-link group">
+                    <svg class="w-8 h-8 mb-2" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+                    <span>GitHub</span>
+                </a>
+                <a href="https://gemini.google.com/app" class="shortcut-link group">
+                    <svg class="w-8 h-8 mb-2" viewBox="0 0 12 12" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M12 1.21l-1.21-1.21-4.79 4.79-4.79-4.79-1.21 1.21 4.79 4.79-4.79 4.79 1.21 1.21 4.79-4.79 4.79 4.79 1.21-1.21-4.79-4.79z"/></svg>
+                    <span>Gemini AI</span>
+                </a>
+                <a href="https://rbnabilahpulunganadm.github.io/reservasi_pengunjung_NPMABS/" class="shortcut-link group">
+                    <svg class="w-8 h-8 mb-2" viewBox="0 0 14 10" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M0 0h14v10H0V0zm7 5.5L1 1.25V0h12v1.25L7 5.5zm-7-4.25L7 7l7-5.75V10H0V1.25z"/></svg>
+                    <span>Aplikasi KRBNP</span>
+                </a>
+            </div>
+        </main>
+
+        <button id="theme-toggle" class="absolute top-4 right-4 p-3 bg-white/50 dark:bg-gray-800/50 rounded-full shadow-md backdrop-blur-sm transition-transform hover:scale-110 z-20">
+            <svg class="w-6 h-6 block dark:hidden" viewBox="0 0 12 12" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M5 0h2v2H5V0zM0 5h2v2H0V5zm10 0h2v2h-2V5zM5 10h2v2H5v-2zM2.12 2.12l1.42-1.42 1.41 1.41-1.41 1.42zM8.46 2.12l1.42 1.42-1.42 1.41-1.41-1.41zM2.12 8.46l1.41 1.42 1.42-1.42-1.41-1.41zM8.46 8.46l1.42-1.41 1.41 1.41-1.41 1.42zM4 6c0 1.1.9 2 2 2s2-.9 2-2-.9-2-2-2-2 .9-2 2z"/></svg>
+            <svg class="w-6 h-6 hidden dark:block" viewBox="0 0 12 12" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M6 0c.34 0 .67.02 1 .05-2.06.46-3.72 2.12-4.18 4.18C2.02.67 2.04.34 2 0h4zm3.5 2.5c.34 0 .67.02 1 .05-1.5.58-2.67 1.75-3.25 3.25-.03-.33-.05-.66-.05-1 0-1.22.42-2.33 1.13-3.17C7.67 2.08 8.08 2.02 8.5 2z"/></svg>
+        </button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const loader = document.getElementById('loader');
+            const searchForm = document.getElementById('search-form');
+            
+            window.addEventListener('load', () => {
+                loader.classList.add('hidden');
+            });
+
+            searchForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                loader.classList.remove('hidden');
+                setTimeout(() => {
+                    searchForm.submit();
+                }, 500);
+            });
+
+            tailwind.config = { darkMode: 'class' }
+
+            const themeToggleBtn = document.getElementById('theme-toggle');
+            const htmlElement = document.documentElement;
+
+            const applyTheme = (theme) => {
+                if (theme === 'dark') htmlElement.classList.add('dark');
+                else htmlElement.classList.remove('dark');
+            };
+            
+            const savedTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            applyTheme(savedTheme);
+
+            themeToggleBtn.addEventListener('click', () => {
+                const newTheme = htmlElement.classList.contains('dark') ? 'light' : 'dark';
+                if (!document.startViewTransition) {
+                    applyTheme(newTheme);
+                    localStorage.setItem('theme', newTheme);
+                    return;
+                }
+                document.startViewTransition(() => {
+                    applyTheme(newTheme);
+                    localStorage.setItem('theme', newTheme);
+                });
+            });
+            
+            const clockElement = document.getElementById('clock');
+            const dateElement = document.getElementById('date-display');
+
+            function updateClock() {
+                const now = new Date();
+                const hours = String(now.getHours()).padStart(2, '0');
+                const minutes = String(now.getMinutes()).padStart(2, '0');
+                const seconds = String(now.getSeconds()).padStart(2, '0');
+                if (clockElement) clockElement.textContent = `${hours}:${minutes}:${seconds}`;
+            }
+
+            function updateDate() {
+                const now = new Date();
+                const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+                if (dateElement) dateElement.textContent = now.toLocaleDateString('id-ID', options);
+            }
+
+            updateClock();
+            updateDate();
+            setInterval(updateClock, 1000);
+
+            const greetingElement = document.getElementById('greeting');
+            const hours = new Date().getHours();
+            let greetingText = '';
+            if (hours < 11) greetingText = 'おはよう (Ohayou)!';
+            else if (hours < 18) greetingText = 'こんにちは (Konnichiwa)!';
+            else greetingText = 'こんばんは (Konbanwa)!';
+            if (greetingElement) greetingElement.textContent = greetingText;
+
+            // --- Sakura Animation ---
+            const sakuraContainer = document.getElementById('sakura-container');
+            const sakuraPetalCount = 20; // Mengurangi jumlah agar tidak terlalu ramai
+            for (let i = 0; i < sakuraPetalCount; i++) {
+                const petal = document.createElement('div');
+                petal.className = 'sakura-petal';
+                petal.style.left = `${Math.random() * 100}vw`;
+                petal.style.animationDuration = `${Math.random() * 5 + 10}s`;
+                petal.style.animationDelay = `${Math.random() * 10}s`;
+                petal.style.transform = `scale(${Math.random() * 0.5 + 0.5})`;
+                if(sakuraContainer) sakuraContainer.appendChild(petal);
+            }
+
+            // --- Matrix Rain Animation ---
+            const canvas = document.getElementById('matrix-canvas');
+            const ctx = canvas.getContext('2d');
+            let matrixInterval;
+
+            function setupMatrix() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+                
+                const arabic = 'أبتثجحخدذرزسشصضطظعغفقكلمنهوي٠١٢٣٤٥٦٧٨٩';
+                const characters = arabic;
+                const fontSize = 16;
+                const columns = Math.floor(canvas.width / fontSize);
+                const drops = Array(columns).fill(1);
+
+                function draw() {
+                    const isDarkTheme = htmlElement.classList.contains('dark');
+                    ctx.fillStyle = isDarkTheme ? 'rgba(17, 24, 39, 0.05)' : 'rgba(243, 244, 246, 0.05)';
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    
+                    ctx.fillStyle = isDarkTheme ? '#10b981' : '#34d399';
+                    ctx.font = fontSize + 'px monospace';
+
+                    for (let i = 0; i < drops.length; i++) {
+                        const text = characters.charAt(Math.floor(Math.random() * characters.length));
+                        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                            drops[i] = 0;
+                        }
+                        drops[i]++;
+                    }
+                }
+                if (matrixInterval) clearInterval(matrixInterval);
+                matrixInterval = setInterval(draw, 35);
+            }
+            setupMatrix();
+            window.addEventListener('resize', setupMatrix);
+            
+            // --- Animated Widgets ---
+            const widgets = document.querySelectorAll('.animation-widget');
+            let currentWidgetIndex = 0;
+            
+            const mathElement = document.getElementById('math-equation');
+            function animateMath() {
+                if (!mathElement) return;
+                const num1 = Math.floor(Math.random() * 100);
+                const num2 = Math.floor(Math.random() * 20) + 1;
+                const operators = ['+', '-', '×', '÷'];
+                const op = operators[Math.floor(Math.random() * operators.length)];
+                let result;
+                switch(op) {
+                    case '+': result = num1 + num2; break;
+                    case '-': result = num1 - num2; break;
+                    case '×': result = num1 * num2; break;
+                    case '÷': result = (num1 / num2).toFixed(1); break;
+                }
+                mathElement.textContent = `${num1} ${op} ${num2} = ?`;
+                setTimeout(() => {
+                    if (mathElement) mathElement.textContent = `${num1} ${op} ${num2} = ${result}`;
+                }, 2500);
+            }
+
+            function cycleWidgets() {
+                if (widgets.length === 0) return;
+                widgets.forEach((widget, index) => {
+                    widget.classList.toggle('widget-visible', index === currentWidgetIndex);
+                });
+                // Logic untuk widget spesifik bisa ditambahkan di sini
+                if (currentWidgetIndex === 0) { // Math widget
+                    animateMath();
+                }
+                currentWidgetIndex = (currentWidgetIndex + 1) % widgets.length;
+            }
+            
+            // Hanya jalankan siklus jika ada widget
+            if(widgets.length > 0) {
+                cycleWidgets(); // Jalankan sekali di awal
+                setInterval(cycleWidgets, 10000); // Ganti setiap 10 detik
+            }
+        });
+    </script>
+</body>
+</html>
+
