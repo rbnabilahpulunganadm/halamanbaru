@@ -193,6 +193,11 @@
     </div>
 
     <!-- Backgrounds -->
+    <!-- Elemen audio tersembunyi -->
+    <audio id="backgroundAudio" loop autoplay>
+        <source src="lagu.mp3" type="audio/mpeg">
+        Browser Anda tidak mendukung elemen audio.
+    </audio>
     <canvas id="matrix-canvas"></canvas>
     <div id="sakura-container" class="absolute inset-0 pointer-events-none" style="z-index: 1;"></div>
     
@@ -256,6 +261,29 @@
     </div>
 
     <script>
+        // Elemen audio tersembunyi
+        // Mengatasi kebijakan autoplay browser
+        document.addEventListener('DOMContentLoaded', function() {
+            const audio = document.getElementById('backgroundAudio');
+            
+            // Coba putar audio
+            const playAudio = () => {
+                audio.play().catch(error => {
+                    console.log('Autoplay diblokir, menunggu interaksi pengguna');
+                });
+            };
+            
+            // Coba putar saat halaman dimuat
+            playAudio();
+            
+            // Coba putar kembali setelah interaksi pengguna
+            document.addEventListener('click', function() {
+                if (audio.paused) {
+                    playAudio();
+                }
+            });
+        });
+        
         document.addEventListener('DOMContentLoaded', function() {
             const loader = document.getElementById('loader');
             const searchForm = document.getElementById('search-form');
