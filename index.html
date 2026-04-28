@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal Aplikasi Klinik Nabilah Pulungan</title>
+    <!-- Tailwind CSS untuk styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome untuk ikon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* Animasi kustom kemunculan tipis-tipis */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-up {
+            animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+        }
+        /* Penundaan (delay) untuk efek muncul berurutan */
+        .delay-100 { animation-delay: 100ms; }
+        .delay-200 { animation-delay: 200ms; }
+        .delay-300 { animation-delay: 300ms; }
+        .delay-400 { animation-delay: 400ms; }
+        .delay-500 { animation-delay: 500ms; }
+        .delay-600 { animation-delay: 600ms; }
+
+        .card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+            border-color: #000;
+        }
+        
+        /* Menyembunyikan scrollbar tapi tetap bisa scroll untuk modal */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen flex items-center justify-center p-4 sm:p-8 font-sans text-gray-900 selection:bg-black selection:text-white">
+
+    <!-- Container Utama -->
+    <div class="max-w-4xl w-full bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden relative">
+        
+        <!-- Header Minimalis (Diperbarui) -->
+        <div class="px-6 sm:px-8 pt-12 pb-8 border-b border-gray-100 flex flex-col items-center text-center animate-fade-up">
+            <div class="w-16 h-16 bg-black text-white rounded-2xl flex items-center justify-center mb-5 shadow-md">
+                <i class="fa-solid fa-notes-medical text-3xl"></i>
+            </div>
+            <h1 class="text-2xl sm:text-3xl md:text-4xl font-black tracking-tight text-black mb-2 uppercase leading-snug">
+                PORTAL APLIKASI <br class="hidden sm:block"> KLINIK NABILAH PULUNGAN
+            </h1>
+            <p class="text-gray-500 text-sm sm:text-base font-bold tracking-[0.2em] uppercase">Mom and Baby Spa</p>
+        </div>
+
+        <!-- Container Grid untuk Tautan (Hardcoded) -->
+        <div class="p-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 bg-white content-start">
+            
+            <!-- Kartu 1: Reservasi Pengunjung -->
+            <a href="https://rbnabilahpulunganadm.github.io/reservasi_pengunjung_NPMABS/" target="_blank" rel="noopener noreferrer" class="card-hover animate-fade-up delay-100 relative bg-white border border-gray-200 rounded-xl group cursor-pointer block p-6 text-center flex flex-col items-center justify-center min-h-[160px]">
+                <div class="w-14 h-14 mb-4 bg-gray-50 border border-gray-100 rounded-full flex items-center justify-center text-black group-hover:bg-black group-hover:text-white transition-colors duration-300">
+                    <i class="fa-solid fa-calendar-check text-xl"></i>
+                </div>
+                <h2 class="text-sm font-bold text-black mb-1 line-clamp-1">Reservasi Pengunjung</h2>
+                <p class="text-xs text-gray-500">Sistem Manajemen NPMABS</p>
+            </a>
+
+            <!-- Kartu 2: Kegiatan Bidan -->
+            <a href="https://rbnabilahpulunganadm.github.io/kegiatan_bidan/" target="_blank" rel="noopener noreferrer" class="card-hover animate-fade-up delay-200 relative bg-white border border-gray-200 rounded-xl group cursor-pointer block p-6 text-center flex flex-col items-center justify-center min-h-[160px]">
+                <div class="w-14 h-14 mb-4 bg-gray-50 border border-gray-100 rounded-full flex items-center justify-center text-black group-hover:bg-black group-hover:text-white transition-colors duration-300">
+                    <i class="fa-solid fa-user-nurse text-xl"></i>
+                </div>
+                <h2 class="text-sm font-bold text-black mb-1 line-clamp-1">Kegiatan Bidan</h2>
+                <p class="text-xs text-gray-500">Pencatatan & Laporan</p>
+            </a>
+
+            <!-- Kartu 3: Absensi -->
+            <a href="https://rbnabilahpulunganadm.github.io/absensi/" target="_blank" rel="noopener noreferrer" class="card-hover animate-fade-up delay-300 relative bg-white border border-gray-200 rounded-xl group cursor-pointer block p-6 text-center flex flex-col items-center justify-center min-h-[160px]">
+                <div class="w-14 h-14 mb-4 bg-gray-50 border border-gray-100 rounded-full flex items-center justify-center text-black group-hover:bg-black group-hover:text-white transition-colors duration-300">
+                    <i class="fa-solid fa-clock-rotate-left text-xl"></i>
+                </div>
+                <h2 class="text-sm font-bold text-black mb-1 line-clamp-1">Absensi Kehadiran</h2>
+                <p class="text-xs text-gray-500">Sistem Presensi Pegawai</p>
+            </a>
+
+            <!-- Kartu 4: Member Anggota -->
+            <a href="https://rbnabilahpulunganadm.github.io/member_anggota/" target="_blank" rel="noopener noreferrer" class="card-hover animate-fade-up delay-400 relative bg-white border border-gray-200 rounded-xl group cursor-pointer block p-6 text-center flex flex-col items-center justify-center min-h-[160px]">
+                <div class="w-14 h-14 mb-4 bg-gray-50 border border-gray-100 rounded-full flex items-center justify-center text-black group-hover:bg-black group-hover:text-white transition-colors duration-300">
+                    <i class="fa-solid fa-users text-xl"></i>
+                </div>
+                <h2 class="text-sm font-bold text-black mb-1 line-clamp-1">Member Anggota</h2>
+                <p class="text-xs text-gray-500">Data Keanggotaan</p>
+            </a>
+
+            <!-- Kartu 5: Daftar Surat -->
+            <a href="https://rbnabilahpulunganadm.github.io/daftarsurat/" target="_blank" rel="noopener noreferrer" class="card-hover animate-fade-up delay-500 relative bg-white border border-gray-200 rounded-xl group cursor-pointer block p-6 text-center flex flex-col items-center justify-center min-h-[160px]">
+                <div class="w-14 h-14 mb-4 bg-gray-50 border border-gray-100 rounded-full flex items-center justify-center text-black group-hover:bg-black group-hover:text-white transition-colors duration-300">
+                    <i class="fa-solid fa-file-lines text-xl"></i>
+                </div>
+                <h2 class="text-sm font-bold text-black mb-1 line-clamp-1">Daftar Surat</h2>
+                <p class="text-xs text-gray-500">Arsip & Persuratan</p>
+            </a>
+
+        </div>
+
+        <!-- Footer -->
+        <div class="bg-white px-8 py-6 text-center border-t border-gray-100 animate-fade-up delay-600">
+            <p class="text-xs text-gray-400 font-medium tracking-wide">
+                © Didesain oleh <span class="font-bold text-gray-700">Ahmad Ro'pat Tanjung</span>, Shafaqo Corp
+            </p>
+        </div>
+        
+    </div>
+
+</body>
+</html>
